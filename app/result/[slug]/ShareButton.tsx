@@ -3,33 +3,41 @@
 import { Share2 } from "lucide-react";
 
 export default function ShareButton() {
-  const handleShare = () => {
-    if (typeof window !== 'undefined') {
-      let shareUrl = window.location.href;
-
-      // --- LOCALHOST OVERRIDE ---
-      // Facebook rejects 'localhost'. If we detect it, swap it for a public dummy URL just to test the UI.
-      if (shareUrl.includes("localhost")) {
-        console.warn("Localhost detected: Using a dummy public URL for Facebook sharing.");
-        // We use a safe, public URL just so the Facebook popup doesn't crash
-        shareUrl = "https://vercel.com"; 
-      }
-
-      // Construct the official Facebook Share URL
-      const fbShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
-      
-      // Open the popup window
-      window.open(fbShareUrl, 'facebook-share-dialog', 'width=800,height=600');
+  const handleShare = async () => {
+    if (typeof window === 'undefined') return;
+    
+    let shareUrl = window.location.href;
+    if (shareUrl.includes("localhost")) {
+      shareUrl = "https://vercel.com"; // Keep our localhost bypass
     }
+
+    // 1. Try the Native Mobile Share API first
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'I found my result!',
+          text: 'Play this quick game to find out yours.',
+          url: shareUrl,
+        });
+        return; // Exit if successful
+      } catch (err) {
+        console.log("Native share cancelled or not supported.", err);
+        // Fall through to standard Facebook share if they cancel or it fails
+      }
+    }
+
+    // 2. Fallback for Desktop or unsupported browsers
+    const fbShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
+    window.open(fbShareUrl, '_blank', 'noopener,noreferrer'); 
   };
 
   return (
     <button 
       onClick={handleShare}
-      className="w-full bg-[#1877F2] text-white border-4 border-black shadow-[8px_8px_0px_rgba(0,0,0,1)] rounded-2xl p-5 text-xl font-black uppercase hover:-translate-y-1 hover:shadow-[12px_12px_0px_rgba(0,0,0,1)] active:translate-y-2 active:shadow-none transition-all flex items-center justify-center gap-3"
+      className="w-full bg-[#1877F2] hover:bg-[#166fe5] text-white rounded-xl p-4 text-lg font-semibold transition-all flex items-center justify-center gap-3 shadow-[0_0_20px_rgba(24,119,242,0.3)] hover:shadow-[0_0_30px_rgba(24,119,242,0.5)]"
     >
-      <Share2 size={24} />
-      Share to Facebook
+      <Share2 size={20} />
+      Share your Result
     </button>
   );
 }

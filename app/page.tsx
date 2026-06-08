@@ -1,52 +1,37 @@
-import Link from "next/link";
-import { GAMES } from "../lib/data"; // Adjust path if you used the `src/` directory (e.g., "@/lib/data")
-import { Sparkles, Play } from "lucide-react";
+import { GAMES } from "../lib/data";
+import { Flame } from "lucide-react";
+import GameCard from "@/components/GameCard";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-pink-50 font-sans text-black selection:bg-black selection:text-white pb-20">
-      
-      {/* Header */}
-      <header className="p-6 border-b-4 border-black bg-white flex justify-between items-center sticky top-0 z-10">
-        <div className="text-2xl font-black tracking-tighter uppercase hover:rotate-2 transition-transform">
-          🔥 VibeQuiz
-        </div>
-      </header>
-
-      {/* Main Content Area */}
-      <main className="max-w-md mx-auto mt-12 px-4 sm:px-0">
-        <div className="text-center mb-10">
-          <h1 className="text-5xl font-black mb-4 leading-tight uppercase">
-            Bored?<br />Play a game.
+    <div className="bg-white w-full">
+      <div className="max-w-6xl mx-auto pt-12 px-6 pb-24">
+        
+        {/* Hero Section */}
+        <div className="text-center max-w-3xl mx-auto mb-16 animate-in fade-in slide-in-from-bottom-4 duration-700">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-pink-100 text-pink-600 text-sm font-bold mb-6 shadow-sm">
+            <Flame size={16} className="animate-pulse" />
+            Over 1M+ Quizzes Played!
+          </div>
+          <h1 className="text-5xl md:text-7xl font-black tracking-tight mb-6 text-slate-900 leading-tight">
+            Play. Discover. <br />
+            <span className="bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 bg-clip-text text-transparent">
+              Share the Fun.
+            </span>
           </h1>
-          <p className="text-xl font-bold text-gray-600">
-            Find out who you really are (probably).
+          <p className="text-lg md:text-xl text-slate-600 font-medium leading-relaxed max-w-2xl mx-auto">
+            Take wildly accurate personality quizzes. Find out your true vibe, challenge your friends, and see who you really are.
           </p>
         </div>
 
-        {/* Dynamic Game Grid */}
-        <div className="space-y-6">
+        {/* Upgraded Image-Rich Game Grid using the Client Component */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {GAMES.map((game, index) => (
-            <Link href={`/quiz/${game.slug}`} key={game.slug} className="block group">
-              <div 
-                className={`${game.colorTheme} border-4 border-black rounded-2xl p-6 shadow-[8px_8px_0px_rgba(0,0,0,1)] group-hover:shadow-[12px_12px_0px_rgba(0,0,0,1)] group-hover:-translate-y-1 transition-all active:translate-y-2 active:shadow-[0px_0px_0px_rgba(0,0,0,1)]`}
-              >
-                <div className="flex justify-between items-start mb-4">
-                  <div className="bg-white p-3 rounded-xl border-2 border-black group-hover:scale-110 transition-transform">
-                    {/* Alternate icons just for visual variety */}
-                    {index % 2 === 0 ? <Sparkles size={24} className="text-black" /> : <Play size={24} className="text-black" />}
-                  </div>
-                  <div className="bg-white border-2 border-black rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wider">
-                    Viral
-                  </div>
-                </div>
-                <h2 className="text-3xl font-black mb-2 uppercase leading-none">{game.title}</h2>
-                <p className="font-bold opacity-90 text-lg">{game.description}</p>
-              </div>
-            </Link>
+            <GameCard key={game.slug} game={game} index={index} />
           ))}
         </div>
-      </main>
+        
+      </div>
     </div>
   );
 }
